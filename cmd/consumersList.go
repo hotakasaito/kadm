@@ -47,8 +47,10 @@ var consumersListCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		consumer, err := client.Consumers.ListAll(context.Background())
-		fmt.Printf("%+v\n", consumer)
+		consumers, err := client.Consumers.ListAll(context.Background())
+		for _, consumer := range consumers {
+			fmt.Printf("Username: %v\n", *consumer.Username)
+		}
 
 		return nil
 	},
