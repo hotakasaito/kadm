@@ -45,6 +45,7 @@ var consumersCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(consumersCmd)
+	consumersCmd.PersistentFlags().StringVarP(&username, "username", "u", "", "username")
 
 	// Here you will define your flags and configuration settings.
 

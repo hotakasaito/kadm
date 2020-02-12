@@ -32,11 +32,11 @@ import (
 	"github.com/hbagdi/go-kong/kong"
 )
 
-// consumersCreateCmd represents the consumersCreate command
-var consumersCreateCmd = &cobra.Command{
-	Use:   "create",
-	Short: "Create Consumer",
-	Long:  `https://docs.konghq.com/1.4.x/admin-api/#create-consumer`,
+// consumersJWTCmd represents the consumersJWT command
+var consumersJWTCmd = &cobra.Command{
+	Use:   "jwt",
+	Short: "Create a JWT credential",
+	Long:  `https://docs.konghq.com/hub/kong-inc/jwt/#create-a-jwt-credential`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		url := viper.GetString("admin.url")
 		if &url == nil {
@@ -51,26 +51,31 @@ var consumersCreateCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		consumer, err := client.Consumers.Create(context.Background(), &kong.Consumer{Username: kong.String(username)})
+		/*
+			consumer := &Consumer{
+				Username: kong.String(username),
+			}
+		*/
+		jwt, err := client.JWTAuths.Create(context.Background(), kong.String(username), &kong.JWTAuth{})
 		if err != nil {
 			return err
 		}
-		fmt.Printf("%+v\n", consumer)
+		fmt.Printf("%+v\n", jwt)
 
 		return nil
 	},
 }
 
 func init() {
-	consumersCmd.AddCommand(consumersCreateCmd)
+	consumersCmd.AddCommand(consumersJWTCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// consumersCreateCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// consumersJWTCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// consumersCreateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// consumersJWTCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
