@@ -41,7 +41,16 @@ var (
 var rootCmd = &cobra.Command{
 	Use:   "kadm",
 	Short: "CLI for KONG Admin API",
-	Long:  `https://docs.konghq.com/1.4.x/admin-api/`,
+	Long: `
+ ___  __    ________  ________  _____ ______      
+|\  \|\  \ |\   __  \|\   ___ \|\   _ \  _   \    
+\ \  \/  /|\ \  \|\  \ \  \_|\ \ \  \\\__\ \  \   
+ \ \   ___  \ \   __  \ \  \ \\ \ \  \\|__| \  \  
+  \ \  \\ \  \ \  \ \  \ \  \_\\ \ \  \    \ \  \ 
+   \ \__\\ \__\ \__\ \__\ \_______\ \__\    \ \__\
+    \|__| \|__|\|__|\|__|\|_______|\|__|     \|__|
+                                                  
+https://docs.konghq.com/1.4.x/admin-api/`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
