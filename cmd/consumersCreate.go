@@ -22,38 +22,55 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"context"
+	"errors"
+	"fmt"
+
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+
+	"github.com/hbagdi/go-kong/kong"
 )
 
-var (
-	username string
-)
+// consumersCreateCmd represents the consumersCreate command
+var consumersCreateCmd = &cobra.Command{
+	Use:   "create",
+	Short: "Create Consumer",
+	Long:  `https://docs.konghq.com/1.4.x/admin-api/#create-consumer`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		url := viper.GetString("admin.url")
+		if &url == nil {
+			return errors.New("required admin url")
+		}
 
-// consumersCmd represents the consumers command
-var consumersCmd = &cobra.Command{
-	Use:   "consumers",
-	Short: "Consumer Object",
-	Long:  `https://docs.konghq.com/1.4.x/admin-api/#consumer-object`,
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		return isConfigValid()
-	},
-	Run: func(cmd *cobra.Command, args []string) {
-		// https://stackoverflow.com/questions/49148992/cobra-subcommand-invoke-help-by-default
-		cmd.Help()
+		if username == "" {
+			return errors.New("required username")
+		}
+
+		client, err := kong.NewClient(&url, nil)
+		if err != nil {
+			return err
+		}
+		consumer, err := client.Consumers.Create(context.Background(), &kong.Consumer{Username: kong.String(username)})
+		if err != nil {
+			return err
+		}
+		fmt.Printf("%+v\n", consumer)
+
+		return nil
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(consumersCmd)
-	consumersCmd.PersistentFlags().StringVarP(&username, "username", "u", "", "username")
+	consumersCmd.AddCommand(consumersCreateCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// consumersCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// consumersCreateCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// consumersCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// consumersCreateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
