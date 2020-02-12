@@ -32,11 +32,11 @@ import (
 	"github.com/hbagdi/go-kong/kong"
 )
 
-// statusCmd represents the status command
-var statusCmd = &cobra.Command{
-	Use:   "status",
-	Short: "Retrieve Node Status",
-	Long:  `https://docs.konghq.com/1.4.x/admin-api/#retrieve-node-status`,
+// consumersCmd represents the consumers command
+var consumersCmd = &cobra.Command{
+	Use:   "consumers",
+	Short: "Consumer Object",
+	Long:  `https://docs.konghq.com/1.4.x/admin-api/#consumer-object`,
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		return isConfigValid()
 	},
@@ -50,26 +50,23 @@ var statusCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		status, err := client.Status(context.Background())
-		if err != nil {
-			return err
-		}
-		fmt.Printf("%+v\n", status.Server)
-		return nil
+		consumer, err := client.Consumers.ListAll(context.Background())
+		fmt.Printf("%+v\n", consumer)
 
+		return nil
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(statusCmd)
+	rootCmd.AddCommand(consumersCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// statusCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// consumersCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// statusCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// consumersCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
