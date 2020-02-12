@@ -22,32 +22,48 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"context"
+	"errors"
+	"fmt"
+
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+
+	"github.com/hbagdi/go-kong/kong"
 )
 
-// consumersCmd represents the consumers command
-var consumersCmd = &cobra.Command{
-	Use:   "consumers",
-	Short: "Consumer Object",
-	Long:  `https://docs.konghq.com/1.4.x/admin-api/#consumer-object`,
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		return isConfigValid()
-	},
-	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
+// consumersListCmd represents the consumersList command
+var consumersListCmd = &cobra.Command{
+	Use:   "list",
+	Short: "List All Consumers",
+	Long:  `https://docs.konghq.com/1.4.x/admin-api/#list-all-consumers`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		url := viper.GetString("admin.url")
+		if &url == nil {
+			return errors.New("required admin url")
+		}
+
+		client, err := kong.NewClient(&url, nil)
+		if err != nil {
+			return err
+		}
+		consumer, err := client.Consumers.ListAll(context.Background())
+		fmt.Printf("%+v\n", consumer)
+
+		return nil
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(consumersCmd)
+	consumersCmd.AddCommand(consumersListCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// consumersCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// consumersListCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// consumersCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// consumersListCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
